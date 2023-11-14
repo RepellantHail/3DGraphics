@@ -2,41 +2,52 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static java.lang.Math.round;
-
 public class Draw extends JFrame {
-    private BufferedImage buffer;
-    private Graphics graPixel;
+    private BufferedImage offscreenBuffer;
+    private Graphics2D offscreenGraphics;
     public Draw(String title) {
         setTitle(title);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 400);
 
-        // Create a larger BufferedImage
-        buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-        graPixel = (Graphics2D) buffer.createGraphics();
+        offscreenBuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        offscreenGraphics = offscreenBuffer.createGraphics();
+        clearBuffer();
 
         setVisible(true);
     }
+    private void clearBuffer() {
+        offscreenGraphics.setColor(Color.WHITE);
+        offscreenGraphics.fillRect(0, 0, getWidth(), getHeight());
+    }
+    @Override
+    public void paint(Graphics g) {
+        g.drawImage(offscreenBuffer, 0, 0, this);
+    }
     public void putPixel(int x, int y, Color color) {
-        buffer.setRGB(0, 0, color.getRGB());
-        this.getGraphics().drawImage(buffer, x, y, this);
+        offscreenBuffer.setRGB(x, y, color.getRGB());
     }
-    public int getPixel(int x, int y){
-        return buffer.getRGB(x,y);
-    }
-
     public void drawLine(int x0, int y0, int x1, int y1, Color color) {
-        int dx = x1 - x0;
-        int dy = y1 - y0;
+        int dx = Math.abs(x1 - x0);
+        int dy = Math.abs(y1 - y0);
+        int sx = (x0 < x1) ? 1 : -1;
+        int sy = (y0 < y1) ? 1 : -1;
+        int err = dx - dy;
 
-        double m = (double) dy / dx;
-        double b = y0 - m * x0;
+        while (true) {
+            putPixel(x0, y0, color);
 
-        for (int x = x0; x <= x1; x++) {
-            int y = (int) round(m * x + b);
-            putPixel(x, y, color);
+            if (x0 == x1 && y0 == y1) break;
+
+            int e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y0 += sy;
+            }
         }
     }
-
 }
