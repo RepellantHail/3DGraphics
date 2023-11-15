@@ -7,17 +7,25 @@ public class DrawShapes {
     int figureID;
     Color color;
     DrawShapes(Draw painter, int figureID){
+        this.figure = new Figure(figureID);
+        this.figure.setSize(100);
         this.canvas = painter;
         this.figureID = figureID;
     }
     public void initializeFigure(Color color){
-        figure = new Figure(figureID);
         this.color = color;
         drawFigura();
     }
     private Point[] parallelProjection(Point3D[] vertices) {
         Point[] _2dGraph = new Point[vertices.length];
 
+        for (int i = 0; i < vertices.length; i++) {
+            int projectedX, projectedY;
+                projectedX = vertices[i].getX() ;
+                projectedY = vertices[i].getY() ;
+
+            _2dGraph[i] = new Point(projectedX, projectedY);
+        }
 
         return _2dGraph;
     }
