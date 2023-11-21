@@ -16,14 +16,30 @@ public class Figure {
     private void initializeCube(){
         this.vertices = new Point3D[]{
                 new Point3D(0, 0, 0),
-                new Point3D(size, 0, 0),
-                new Point3D(size, size, 0),
-                new Point3D(0, size, 0),
-                new Point3D(0, 0, size),
-                new Point3D(size, 0, size),
-                new Point3D(size, size, size),
-                new Point3D(0, size, size)
+                new Point3D(0, 0, 100),
+                new Point3D(100, 0, 100),
+                new Point3D(100, 0, 0),
+                new Point3D(100, 100, 0  ),
+                new Point3D(100, 100, 100),
+                new Point3D(0  , 100, 100),
+                new Point3D(0  , 100, 0  ),
         };
+        this.aristas = new Arista[12];
+        aristas[0]  = new Arista(0, 1);
+        aristas[1]  = new Arista(0, 3);
+        aristas[2]  = new Arista(0, 7);
+
+        aristas[3]  = new Arista(4, 3);
+        aristas[4]  = new Arista(4, 5);
+        aristas[5]  = new Arista(4, 7);
+
+        aristas[6]  = new Arista(2, 1);
+        aristas[7]  = new Arista(2, 3);
+        aristas[8]  = new Arista(2, 5);
+
+        aristas[9 ] = new Arista(6, 1);
+        aristas[10] = new Arista(6, 5);
+        aristas[11] = new Arista(6, 7);
     }
     private void initializePyramid(){
         //Set vertices
@@ -35,7 +51,7 @@ public class Figure {
             vertices[4] =  new Point3D(size / 2, 0, size/2);
 
         //Set arista
-        aristas = new Arista[8];
+        this.aristas = new Arista[8];
         //Base piramide
         aristas[0] = new Arista(0, 1);
         aristas[1] = new Arista(1, 2);
@@ -47,11 +63,9 @@ public class Figure {
         aristas[6] = new Arista(4, 2);
         aristas[7] = new Arista(4, 3);
     }
-
     public Arista[] getAristas(){
         return this.aristas;
     }
-
     public Point3D[] getVertices(){
         return this.vertices;
     }

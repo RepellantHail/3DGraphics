@@ -5,8 +5,7 @@ import java.awt.image.BufferedImage;
 public class Draw extends JFrame {
     private BufferedImage offscreenBuffer;
     private Graphics2D offscreenGraphics;
-    public Draw(String title) {
-        setTitle(title);
+    public Draw() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 400);
 
@@ -15,8 +14,10 @@ public class Draw extends JFrame {
         clearBuffer();
 
         setVisible(true);
+        setFocusable(true);  // Enable focus on the Draw component
+        requestFocus();
     }
-    private void clearBuffer() {
+    public void clearBuffer() {
         offscreenGraphics.setColor(Color.WHITE);
         offscreenGraphics.fillRect(0, 0, getWidth(), getHeight());
     }
