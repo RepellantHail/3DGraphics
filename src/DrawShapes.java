@@ -1,26 +1,35 @@
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DrawShapes {
     private Draw canvas;
-    private Figure figure;
+    private Figure originalFigure;
+    private Figure transformedFigure;
     private Point[] projectedFigure;
     private int figureID;
     private Color color;
     private float distance = 1;
-    DrawShapes(Draw painter, int figureID){
-        this.figure = new Figure(figureID);
-        this.figure.setSize(100);
-        this.canvas = painter;
+    private int centerX;
+    private int centerY;
+    private double initialScale;
+    private double initialAngleX = 0;
+    private double initialAngleY = 0;
+    private double initialAngleZ = 0;
+    public DrawShapes(Draw canvas, int figureID) {
+        this.canvas = canvas;
         this.figureID = figureID;
-    }
-    public void initializeFigure(Color color, int projection){
-        this.color = color;
+        this.originalFigure = new Figure(figureID);
+        this.transformedFigure = new Figure(figureID);
+        this.color = Color.black;
+        this.centerX = canvas.getWidth() / 2;
+        this.centerY = canvas.getWidth() / 2;
+        this.initialScale = 5.0;
 
-        if(projection == 1)
-            projectedFigure = parallelProjection(figure.getVertices());
-        else
-            projectedFigure = perspectiveProjection(figure.getVertices());
-
+        // Initialize the projected figure
+        this.projectedFigure = parallelProjection(originalFigure.getVertices());
+        scaleFigure(1.0);
+        centerFigure(); // Center the figure before drawing
         draw();
     }
     private Point[] parallelProjection(Point3D[] vertices) {
@@ -35,69 +44,172 @@ public class DrawShapes {
 
         return projectedPoints;
     }
-    private Point[] perspectiveProjection(Point3D[] vertices) {
-        Point[] projectedPoints = new Point[vertices.length];
-
-        for (int i = 0; i < vertices.length; i++) {
-            float z = 1 / (distance - vertices[i].getZ());
-            int projectedX = (int) (vertices[i].getX() * z);
-            int projectedY = (int) (vertices[i].getY() * z);
-
-            if(projectedX < 0) projectedX = 0;
-            if(projectedY < 0) projectedY = 0;
-
-            projectedPoints[i] = new Point(projectedX, projectedY);
+    public void centerFigure() {
+        int totalX = 0;
+        int totalY = 0;
+        for (Point point : projectedFigure) {
+            totalX += point.x;
+            totalY += point.y;
         }
 
-        return projectedPoints;
+        int averageX = totalX / projectedFigure.length;
+        int averageY = totalY / projectedFigure.length;
+
+        // Translate the projected vertices to center the figure
+        int shiftX = centerX - averageX;
+        int shiftY = centerY - averageY;
+
+        for (Point point : projectedFigure) {
+            point.x += shiftX;
+            point.y += shiftY;
+        }
     }
-    public void draw(){
-        Arista[] figura = figure.getAristas();
+    public void draw() {
+        centerFigure();
+        Arista[] figura = transformedFigure.getAristas();
 
         canvas.clearBuffer();
-        for(Arista a: figura) { //Dibujar Linea de arista a arista
-            canvas.drawLine(projectedFigure[a.getVerticeOrigen ()].x, projectedFigure[a.getVerticeOrigen ()].y,
-                            projectedFigure[a.getVerticeDestino()].x, projectedFigure[a.getVerticeDestino()].y, color
-            );
+        for (Arista a : figura) { // Draw lines between vertices
+            canvas.drawLine(
+                    projectedFigure[a.getVerticeOrigen()].x,
+                    projectedFigure[a.getVerticeOrigen()].y,
+                    projectedFigure[a.getVerticeDestino()].x,
+                    projectedFigure[a.getVerticeDestino()].y,
+                    color);
         }
+
         canvas.repaint();
     }
-    public void translateFigure(int direction, int step){
-        for (Point p : projectedFigure){
-            if(direction == 0)
-                p.x += step;
-            else
-                p.y += step;
+    private void copyFigure(Figure source, Figure destination) {
+        // Copy the vertices from source to destination
+        Point3D[] sourceVertices = source.getVertices();
+        Point3D[] copiedVertices = new Point3D[sourceVertices.length];
+
+        for (int i = 0; i < sourceVertices.length; i++) {
+            copiedVertices[i] = new Point3D(
+                    sourceVertices[i].getX(),
+                    sourceVertices[i].getY(),
+                    sourceVertices[i].getZ()
+            );
         }
 
+        // Copy the edges from source to destination
+        Arista[] sourceAristas = source.getAristas();
+        Arista[] copiedAristas = Arrays.copyOf(sourceAristas, sourceAristas.length);
+
+        // Set the copied vertices and edges to the destination
+        destination.setVertices(copiedVertices);
+        destination.setAristas(copiedAristas);
     }
-    public void scaleFigure(double factor){
-        for (Point p : projectedFigure){
-                p.x *= factor;
-                p.y *= factor;
+    public void scaleFigure(double factor) {
+        copyFigure(originalFigure, transformedFigure);
+        scaleVertices(transformedFigure, initialScale);
+        scaleVertices(transformedFigure, factor);
+        this.projectedFigure = parallelProjection(transformedFigure.getVertices()); // Re-project the scaled vertices
+        draw(); // Draw the updated figure
+        initialScale *= factor;
+    }
+    private void scaleVertices(Figure copy,double factor) {
+        // Scale the 3D vertices of the figure
+        for (Point3D vertex : copy.getVertices()) {
+            double scaledX = vertex.getX() * factor;
+            double scaledY = vertex.getY() * factor;
+            double scaledZ = vertex.getZ() * factor;
+
+            // Round to integers to avoid accumulation of rounding errors
+            vertex.setX((int) Math.round(scaledX));
+            vertex.setY((int) Math.round(scaledY));
+            vertex.setZ((int) Math.round(scaledZ));
         }
     }
-    public void rotateFigureX(double angle) {
-        Figure tempShape = figure;
-        double cosAngle = Math.cos(angle);
-        double sinAngle = Math.sin(angle);
+    public void translateFigure(int deltaX, int deltaY) {
+        translateVertices(transformedFigure, deltaX, deltaY);
+        //Update center
+        centerX += deltaX;
+        centerY += deltaY;
 
-        for (int i = 0; i < tempShape.getVertices().length; i++) {
-            Point3D vertex = tempShape.getVertices()[i];
-            int y = vertex.getY();
-            int z = vertex.getZ();
-
-            // Apply the 3D rotation matrix
-            int newY = (int) (y * cosAngle - z * sinAngle);
-            int newZ = (int) (y * sinAngle + z * cosAngle);
-
-            // Update the Y and Z coordinates of the rotated point
-            vertex.setY(newY);
-            vertex.setZ(newZ);
-        }
-
-        // Redraw the rotated shape
-        projectedFigure = perspectiveProjection(tempShape.getVertices());
+        this.projectedFigure = parallelProjection(transformedFigure.getVertices()); // Re-project the translated vertices
+        draw(); // Draw the updated figure
     }
+    private void translateVertices(Figure figure,int deltaX, int deltaY){
+        for (Point3D vertex : figure.getVertices()) {
+            vertex.setX(vertex.getX() + deltaX);
+            vertex.setY(vertex.getY() + deltaY);
+        }
+    }
+    public void rotateFigureX(double angle){
+        rotateVerticesX(transformedFigure, initialAngleX);
+        rotateVerticesX(transformedFigure, angle);
+        this.projectedFigure = parallelProjection(transformedFigure.getVertices());
+        draw();
+        initialAngleX += angle;
+    }
+    public void rotateFigureY(double angle) {
+        rotateVerticesY(transformedFigure, initialAngleY);
+        rotateVerticesY(transformedFigure, angle);
+        this.projectedFigure = parallelProjection(transformedFigure.getVertices());
+        draw();
+        initialAngleY += angle;
+    }
+    public void rotateFigureZ(double angle) {
+        rotateVerticesZ(transformedFigure, initialAngleZ);
+        rotateVerticesZ(transformedFigure, angle);
+        this.projectedFigure = parallelProjection(transformedFigure.getVertices());
+        draw();
+        initialAngleZ += angle;
+    }
+    private void rotateVerticesX(Figure figure, double angle) {
+        double radians = Math.toRadians(angle);
+        double cosTheta = Math.cos(radians);
+        double sinTheta = Math.sin(radians);
 
+        for (Point3D vertex : figure.getVertices()) {
+            double y = vertex.getY();
+            double z = vertex.getZ();
+
+            // Apply rotation matrix
+            double newY = y * cosTheta - z * sinTheta;
+            double newZ = y * sinTheta + z * cosTheta;
+
+            // Round to integers to avoid accumulation of rounding errors
+            vertex.setY((int) Math.round(newY));
+            vertex.setZ((int) Math.round(newZ));
+        }
+    }
+    private void rotateVerticesY(Figure figure, double angle) {
+        double radians = Math.toRadians(angle);
+        double cosTheta = Math.cos(radians);
+        double sinTheta = Math.sin(radians);
+
+        for (Point3D vertex : figure.getVertices()) {
+            double x = vertex.getX();
+            double z = vertex.getZ();
+
+            // Apply rotation matrix
+            double newX = x * cosTheta + z * sinTheta;
+            double newZ = -x * sinTheta + z * cosTheta;
+
+            // Round to integers to avoid accumulation of rounding errors
+            vertex.setX((int) Math.round(newX));
+            vertex.setZ((int) Math.round(newZ));
+        }
+    }
+    private void rotateVerticesZ(Figure figure, double angle) {
+        double radians = Math.toRadians(angle);
+        double cosTheta = Math.cos(radians);
+        double sinTheta = Math.sin(radians);
+
+        for (Point3D vertex : figure.getVertices()) {
+            double x = vertex.getX();
+            double y = vertex.getY();
+
+            // Apply rotation matrix
+            double newX = x * cosTheta - y * sinTheta;
+            double newY = x * sinTheta + y * cosTheta;
+
+            // Round to integers to avoid accumulation of rounding errors
+            vertex.setX((int) Math.round(newX));
+            vertex.setY((int) Math.round(newY));
+        }
+    }
 }

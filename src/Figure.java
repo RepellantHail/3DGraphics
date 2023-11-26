@@ -16,13 +16,13 @@ public class Figure {
     private void initializeCube(){
         this.vertices = new Point3D[]{
                 new Point3D(0, 0, 0),
-                new Point3D(0, 0, 100),
-                new Point3D(100, 0, 100),
-                new Point3D(100, 0, 0),
-                new Point3D(100, 100, 0  ),
-                new Point3D(100, 100, 100),
-                new Point3D(0  , 100, 100),
-                new Point3D(0  , 100, 0  ),
+                new Point3D(0, 0, 1),
+                new Point3D(1, 0, 1),
+                new Point3D(1, 0, 0),
+                new Point3D(1, 1, 0),
+                new Point3D(1, 1, 1),
+                new Point3D(0, 1, 1),
+                new Point3D(0, 1, 0),
         };
         this.aristas = new Arista[12];
         aristas[0]  = new Arista(0, 1);
@@ -62,6 +62,12 @@ public class Figure {
         aristas[5] = new Arista(4, 1);
         aristas[6] = new Arista(4, 2);
         aristas[7] = new Arista(4, 3);
+    }
+    public void setVertices(Point3D[] vertices) {
+        this.vertices = vertices;
+    }
+    public void setAristas(Arista[] aristas) {
+        this.aristas = aristas;
     }
     public Arista[] getAristas(){
         return this.aristas;

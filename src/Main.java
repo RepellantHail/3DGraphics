@@ -12,7 +12,7 @@ public class Main implements KeyListener {
         typeShape = 1;
         projectionType = 1;
         shapes = new DrawShapes(painter, typeShape);
-        shapes.initializeFigure(Color.magenta, projectionType);
+        shapes.draw();
 
         painter.addKeyListener(new Main());
         painter.setFocusable(true);
@@ -20,36 +20,36 @@ public class Main implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        int step = 2;
+        int step = 1;
+        int angle = 5;
 
         switch (keyCode) {
             case KeyEvent.VK_UP:
-                shapes.translateFigure(1, -step);
-                shapes.draw();
+                shapes.translateFigure(0, -step); // Move up
                 break;
             case KeyEvent.VK_DOWN:
-                shapes.translateFigure(1, step);
-                shapes.draw();
+                shapes.translateFigure(0, step); // Move down
                 break;
             case KeyEvent.VK_LEFT:
-                shapes.translateFigure(0, -step);
-                shapes.draw();
+                shapes.translateFigure(-step, 0); // Move left
                 break;
             case KeyEvent.VK_RIGHT:
-                shapes.translateFigure(0, step);
-                shapes.draw();
+                shapes.translateFigure(step, 0); // Move right
                 break;
             case KeyEvent.VK_ADD:
-                shapes.scaleFigure(1.01);
-                shapes.draw();
+                shapes.scaleFigure(1.02);
                 break;
             case KeyEvent.VK_MINUS:
-                shapes.scaleFigure(1.0 / Math.sqrt(1.01));
-                shapes.draw();
+                shapes.scaleFigure(0.98);
                 break;
             case KeyEvent.VK_X:
-                shapes.rotateFigureX(5);
-                shapes.draw();
+                shapes.rotateFigureX(angle);
+                break;
+            case KeyEvent.VK_Y:
+                shapes.rotateFigureY(angle);
+                break;
+            case KeyEvent.VK_Z:
+                shapes.rotateFigureZ(angle);
                 break;
             default:
         }
