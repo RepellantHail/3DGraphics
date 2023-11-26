@@ -5,9 +5,10 @@ import java.awt.image.BufferedImage;
 public class Draw extends JFrame {
     private BufferedImage offscreenBuffer;
     private Graphics2D offscreenGraphics;
-    public Draw() {
+    public Draw(String title) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 400);
+        setTitle(title);
 
         offscreenBuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         offscreenGraphics = offscreenBuffer.createGraphics();
@@ -51,4 +52,6 @@ public class Draw extends JFrame {
             }
         }
     }
+
+
 }

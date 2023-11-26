@@ -44,11 +44,11 @@ public class Figure {
     private void initializePyramid(){
         //Set vertices
         this.vertices = new Point3D[5];
-            vertices[0] =  new Point3D(0, size, 0);
-            vertices[1] =  new Point3D(0, size, size);
-            vertices[2] =  new Point3D(size, size, size);
-            vertices[3] =  new Point3D(size, size, 0);
-            vertices[4] =  new Point3D(size / 2, 0, size/2);
+            vertices[0] =  new Point3D(0, 1, 0);
+            vertices[1] =  new Point3D(0, 1, 1);
+            vertices[2] =  new Point3D(1, 1, 1);
+            vertices[3] =  new Point3D(1, 1, 0);
+            vertices[4] =  new Point3D(1 / 2, 0, 1/2);
 
         //Set arista
         this.aristas = new Arista[8];

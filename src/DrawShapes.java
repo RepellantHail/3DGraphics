@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class DrawShapes {
     private Draw canvas;
+    private int projection;
     private Figure originalFigure;
     private Figure transformedFigure;
     private Point[] projectedFigure;
@@ -12,19 +13,19 @@ public class DrawShapes {
     private float distance = 1;
     private int centerX;
     private int centerY;
-    private double initialScale;
-    private double initialAngleX = 0;
-    private double initialAngleY = 0;
+    private double initialScale = 10;
+    private double initialAngleX = 15;
+    private double initialAngleY = 15;
     private double initialAngleZ = 0;
-    public DrawShapes(Draw canvas, int figureID) {
+    public DrawShapes(Draw canvas, int figureID, int projection) {
         this.canvas = canvas;
         this.figureID = figureID;
+        this.projection = projection;
         this.originalFigure = new Figure(figureID);
         this.transformedFigure = new Figure(figureID);
         this.color = Color.black;
         this.centerX = canvas.getWidth() / 2;
         this.centerY = canvas.getWidth() / 2;
-        this.initialScale = 5.0;
 
         // Initialize the projected figure
         this.projectedFigure = parallelProjection(originalFigure.getVertices());
@@ -105,6 +106,7 @@ public class DrawShapes {
         copyFigure(originalFigure, transformedFigure);
         scaleVertices(transformedFigure, initialScale);
         scaleVertices(transformedFigure, factor);
+
         this.projectedFigure = parallelProjection(transformedFigure.getVertices()); // Re-project the scaled vertices
         draw(); // Draw the updated figure
         initialScale *= factor;
@@ -212,4 +214,57 @@ public class DrawShapes {
             vertex.setY((int) Math.round(newY));
         }
     }
+
+    public void automaticRotation() {
+        scaleFigure(10);
+
+        // Create a new thread for automatic rotation
+        Thread rotationThread = new Thread(() -> {
+            int angleStep = 1;
+            int delay = 600;
+            while (true) {
+                while (initialAngleX <= 360) {
+                    rotateFigureX(angleStep);
+                    angleStep += 5;
+
+                    try {
+                        Thread.sleep(delay);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                angleStep = 0;
+                while (initialAngleY <= 360) {
+                    rotateFigureY(angleStep);
+                    angleStep += 5;
+
+                    try {
+                        Thread.sleep(delay);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                angleStep = 0;
+                while (initialAngleZ <= 360) {
+                    rotateFigureZ(angleStep);
+                    angleStep += 5;
+
+                    try {
+                        Thread.sleep(delay);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                //Set to 0
+                initialAngleX = 0;
+                initialAngleY = 0;
+                initialAngleZ = 0;
+            }
+        });
+
+        // Start the rotation thread
+        rotationThread.start();
+    }
+
 }

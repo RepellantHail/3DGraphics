@@ -5,14 +5,14 @@ import java.awt.event.KeyListener;
 
 public class Main implements KeyListener {
     static DrawShapes shapes;
-    static int typeShape;
-    static int projectionType;
     public static void main(String[] args) {
-        Draw painter = new Draw();
-        typeShape = 1;
-        projectionType = 1;
-        shapes = new DrawShapes(painter, typeShape);
+        Draw painter = new Draw("Cube Shape");
+        shapes = new DrawShapes(painter, 1, 1);
         shapes.draw();
+
+        Draw canvas = new Draw("Automatic Cube");
+        DrawShapes rotationCube = new DrawShapes(canvas, 1, 1);
+        rotationCube.automaticRotation();
 
         painter.addKeyListener(new Main());
         painter.setFocusable(true);
