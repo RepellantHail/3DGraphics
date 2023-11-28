@@ -6,16 +6,27 @@ import java.awt.event.KeyListener;
 public class Main implements KeyListener {
     static DrawShapes shapes;
     public static void main(String[] args) {
-        Draw painter = new Draw("Cube Shape");
-        shapes = new DrawShapes(painter, 1, 1);
+        //Draw Cube with events
+//        Draw painter = new Draw("Cube Shape");
+//        shapes = new DrawShapes(painter, 1, 1);
+//        shapes.draw();
+
+        //Draw automatic Cube
+//        Draw canvas = new Draw("Automatic Cube");
+//        DrawShapes rotationCube = new DrawShapes(canvas, 1, 1);
+//        rotationCube.automaticRotation();
+
+        //Add key events
+//        painter.addKeyListener(new Main());
+//        painter.setFocusable(true);
+
+        //Draw Surface
+        Draw surfaceCanvas = new Draw("Surface");
+        shapes = new DrawShapes(surfaceCanvas, 4);
         shapes.draw();
 
-        Draw canvas = new Draw("Automatic Cube");
-        DrawShapes rotationCube = new DrawShapes(canvas, 1, 1);
-        rotationCube.automaticRotation();
-
-        painter.addKeyListener(new Main());
-        painter.setFocusable(true);
+        surfaceCanvas.addKeyListener(new Main());
+        surfaceCanvas.setFocusable(true);
     }
     @Override
     public void keyPressed(KeyEvent e) {

@@ -8,15 +8,29 @@ public class DrawShapes {
     private Figure originalFigure;
     private Figure transformedFigure;
     private Point[] projectedFigure;
+    private float projectionMatrix[][] = new float[4][4];
     private int figureID;
     private Color color;
     private float distance = 1;
     private int centerX;
     private int centerY;
-    private double initialScale = 10;
-    private double initialAngleX = 15;
-    private double initialAngleY = 15;
+    private double initialScale = 15;
+    private double initialAngleX = 0;
+    private double initialAngleY = 0;
     private double initialAngleZ = 0;
+
+    public DrawShapes(Draw canvas, int figureID){
+        this.canvas = canvas;
+        this.figureID = figureID;
+        this.color = Color.black;
+        this.centerX = canvas.getWidth() / 2;
+        this.centerY = canvas.getWidth() / 2;
+        this.projection = 1;
+        this.originalFigure = new Figure(figureID);
+        this.transformedFigure = new Figure(figureID);
+        this.projectedFigure = parallelProjection(originalFigure.getVertices());
+        draw();
+    }
     public DrawShapes(Draw canvas, int figureID, int projection) {
         this.canvas = canvas;
         this.figureID = figureID;
@@ -27,10 +41,27 @@ public class DrawShapes {
         this.centerX = canvas.getWidth() / 2;
         this.centerY = canvas.getWidth() / 2;
 
+        //Initalize matrix
+        /*float fNear = 0.1f;
+        float fFar = 1000.0f;
+        float fFov = 90.0f;
+        float fAspectRatio = (float)canvas.getHeight() / (float) canvas.getWidth();
+        float fFovRad = (float) (1.0f / Math.tan(fFov * 0.5 / 180.0f * 3.14159f));
+
+        this.projectionMatrix[0][0] = fAspectRatio * fFovRad;
+        this.projectionMatrix[1][1] = fFovRad;
+        this.projectionMatrix[2][2] = fFar / (fFar * fNear);
+        this.projectionMatrix[3][2] = (-fFar * fNear) / (fFar - fNear);
+        this.projectionMatrix[2][3] = 1.0f;
+        this.projectionMatrix[3][3] = 0.0f;*/
+
         // Initialize the projected figure
-        this.projectedFigure = parallelProjection(originalFigure.getVertices());
+        if(projection == 1)
+            this.projectedFigure = parallelProjection(originalFigure.getVertices());
+        else
+            this.projectedFigure = perspectiveProjection(originalFigure.getVertices());
+
         scaleFigure(1.0);
-        centerFigure(); // Center the figure before drawing
         draw();
     }
     private Point[] parallelProjection(Point3D[] vertices) {
@@ -42,6 +73,33 @@ public class DrawShapes {
 
             projectedPoints[i] = new Point(projectedX, projectedY);
         }
+
+        return projectedPoints;
+    }
+    private Point[] perspectiveProjection(Point3D[] vertices) {
+        Point[] projectedPoints = new Point[vertices.length];
+
+        /*for (int i = 0; i < vertices.length; i++) {
+            // Homogeneous coordinates
+            float x = (float) vertices[i].getX();
+            float y = (float) vertices[i].getY();
+            float z = (float) vertices[i].getZ();
+            float w = 1.0f;
+
+            // Apply projection matrix
+            float projX = projectionMatrix[0][0] * x + projectionMatrix[1][0] * y + projectionMatrix[2][0] * z + projectionMatrix[3][0] * w;
+            float projY = projectionMatrix[0][1] * x + projectionMatrix[1][1] * y + projectionMatrix[2][1] * z + projectionMatrix[3][1] * w;
+
+            // Perspective divide
+            projX /= w;
+            projY /= w;
+
+            // Map to screen coordinates
+            int projectedX = (int) Math.round((projX + 1) * canvas.getWidth() / 2);
+            int projectedY = (int) Math.round((-projY + 1) * canvas.getHeight() / 2);
+
+            projectedPoints[i] = new Point(projectedX, projectedY);
+        }*/
 
         return projectedPoints;
     }
@@ -102,12 +160,16 @@ public class DrawShapes {
         destination.setVertices(copiedVertices);
         destination.setAristas(copiedAristas);
     }
+    private Point[] projectFigure(){
+        return (projection == 1) ? parallelProjection(transformedFigure.getVertices()): perspectiveProjection(transformedFigure.getVertices());
+    }
     public void scaleFigure(double factor) {
         copyFigure(originalFigure, transformedFigure);
         scaleVertices(transformedFigure, initialScale);
         scaleVertices(transformedFigure, factor);
 
-        this.projectedFigure = parallelProjection(transformedFigure.getVertices()); // Re-project the scaled vertices
+        projectedFigure = projectFigure();
+
         draw(); // Draw the updated figure
         initialScale *= factor;
     }
@@ -140,23 +202,33 @@ public class DrawShapes {
         }
     }
     public void rotateFigureX(double angle){
+        copyFigure(originalFigure, transformedFigure);
         rotateVerticesX(transformedFigure, initialAngleX);
         rotateVerticesX(transformedFigure, angle);
-        this.projectedFigure = parallelProjection(transformedFigure.getVertices());
+
+        projectedFigure = projectFigure();
+
         draw();
         initialAngleX += angle;
     }
     public void rotateFigureY(double angle) {
+        copyFigure(originalFigure, transformedFigure);
+
         rotateVerticesY(transformedFigure, initialAngleY);
         rotateVerticesY(transformedFigure, angle);
-        this.projectedFigure = parallelProjection(transformedFigure.getVertices());
+
+        projectedFigure = projectFigure();
+
         draw();
         initialAngleY += angle;
     }
     public void rotateFigureZ(double angle) {
+        copyFigure(originalFigure, transformedFigure);
         rotateVerticesZ(transformedFigure, initialAngleZ);
         rotateVerticesZ(transformedFigure, angle);
-        this.projectedFigure = parallelProjection(transformedFigure.getVertices());
+
+        projectedFigure = projectFigure();
+
         draw();
         initialAngleZ += angle;
     }
@@ -214,7 +286,6 @@ public class DrawShapes {
             vertex.setY((int) Math.round(newY));
         }
     }
-
     public void automaticRotation() {
         scaleFigure(10);
 
@@ -266,5 +337,4 @@ public class DrawShapes {
         // Start the rotation thread
         rotationThread.start();
     }
-
 }
