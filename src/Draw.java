@@ -52,6 +52,9 @@ public class Draw extends JFrame {
             }
         }
     }
-
-
+    private Color getColor(int x, int y){
+        Color color;
+        color = (x < 199) ? Color.RED : Color.GREEN;
+        return color;
+    }
 }

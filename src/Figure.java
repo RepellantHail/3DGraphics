@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class Figure {
     Arista aristas[];
     Point3D vertices[];
@@ -98,13 +100,9 @@ public class Figure {
 
         for (int i = 0; i < uPoints; i++) {
             for (int j = 0; j < vPoints; j++) {
-                double u = (2 * Math.PI * i) / (uPoints - 1); // u ranges from 0 to 2pi
-                double v = (2 * Math.PI * j) / (vPoints - 1); // v ranges from 0 to 2pi
-
-                // Parametric equations for a surface with valleys
-                double x = u;
-                double y = v;
-                double z = A * Math.sin(B * u);
+                double x = (2 * Math.PI * i) / (uPoints - 1); // u ranges from 0 to 2pi
+                double y = (2 * Math.PI * j) / (vPoints - 1); // v ranges from 0 to 2pi
+                double z = A * Math.sin(B * x);
 
                 int index = i * vPoints + j;
                 int size = 20;
@@ -122,10 +120,17 @@ public class Figure {
                 int current = i * vPoints + j;
                 int nextU = ((i + 1) % uPoints) * vPoints + j;
 
-                this.aristas[edgeIndex++] = new Arista(current, nextU);
+                // Set color gradient based on the position of vertices
+                Color color = getColor(i, j);
+
+                this.aristas[edgeIndex++] = new Arista(current, nextU, color);
 
                 int nextV = i * vPoints + (j + 1) % vPoints;
-                this.aristas[edgeIndex++] = new Arista(current, nextV);
+
+                // Set color gradient based on the position of vertices
+                color = getColor(i, (j + 1) % vPoints);
+
+                this.aristas[edgeIndex++] = new Arista(current, nextV, color);
             }
         }
     }
@@ -160,14 +165,20 @@ public class Figure {
                 int current = i * dPoints + j;
                 int nextT = ((i + 1) % tPoints) * dPoints + j;
 
-                this.aristas[edgeIndex++] = new Arista(current, nextT);
+                // Set color gradient based on the position of vertices
+                Color color = getColor(i, j);
+
+                this.aristas[edgeIndex++] = new Arista(current, nextT, color);
 
                 int nextD = i * dPoints + (j + 1) % dPoints;
-                this.aristas[edgeIndex++] = new Arista(current, nextD);
+
+                // Set color gradient based on the position of vertices
+                color = getColor(i, (j + 1) % dPoints);
+
+                this.aristas[edgeIndex++] = new Arista(current, nextD, color);
             }
         }
     }
-
     public void setVertices(Point3D[] vertices) {
         this.vertices = vertices;
     }
@@ -180,4 +191,44 @@ public class Figure {
     public Point3D[] getVertices(){
         return this.vertices;
     }
+    protected double getMinZ() {
+        double minZ = Double.MAX_VALUE;
+
+        for (Point3D vertex : vertices) {
+            if (vertex.getZ() < minZ) {
+                minZ = vertex.getZ();
+            }
+        }
+
+        return minZ;
+    }
+    protected double getMaxZ() {
+        double maxZ = Double.MIN_VALUE;
+
+        for (Point3D vertex : vertices) {
+            if (vertex.getZ() > maxZ) {
+                maxZ = vertex.getZ();
+            }
+        }
+
+        return maxZ;
+    }
+    private Color getColor(int i, int j) {
+        // Adjust the factor to control the range of the color gradient
+        double factor = 2.0;
+
+        // Add epsilon to denominators to avoid division by zero
+        int red = (i != 0) ? (int) (factor * 255 / (i + 1)) : 0;
+        int blue = (j != 0) ? (int) (factor * 255 / (j + 1)) : 0;
+        int green = 0;
+
+        // Clamp color values to the range [0, 255]
+        red   = Math.max(0, Math.min(255, red + 100));
+        blue  = Math.max(0, Math.min(255, blue + 100));
+        green = Math.max(0, Math.min(255, green));
+
+        return new Color(red, green, blue);
+    }
+
+
 }

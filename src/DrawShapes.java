@@ -128,13 +128,13 @@ public class DrawShapes {
         Arista[] figura = transformedFigure.getAristas();
 
         canvas.clearBuffer();
-        for (Arista a : figura) { // Draw lines between vertices
-            canvas.drawLine(
-                    projectedFigure[a.getVerticeOrigen()].x,
-                    projectedFigure[a.getVerticeOrigen()].y,
-                    projectedFigure[a.getVerticeDestino()].x,
-                    projectedFigure[a.getVerticeDestino()].y,
-                    color);
+        for (Arista a : figura) {
+            int x0 = projectedFigure[a.getVerticeOrigen()].x;
+            int y0 = projectedFigure[a.getVerticeOrigen()].y;
+            int x1 = projectedFigure[a.getVerticeDestino()].x;
+            int y1 = projectedFigure[a.getVerticeDestino()].y;
+
+            canvas.drawLine(x0, y0, x1, y1, a.getColor());
         }
 
         canvas.repaint();
@@ -337,4 +337,21 @@ public class DrawShapes {
         // Start the rotation thread
         rotationThread.start();
     }
+    private Color getColor(int x, int y) {
+        // Ensure x and y are not zero to avoid division by zero
+        x = (x == 0) ? 1 : x;
+        y = (y == 0) ? 1 : y;
+
+        double factor = 2.0;
+
+        // Calculate RGB values based on the position of x and y
+        int red = (255 );
+        int blue = (255 / y * 200);
+        int green = 0;
+
+        return new Color(red, green, blue);
+    }
+
+
+
 }

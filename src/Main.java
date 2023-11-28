@@ -22,7 +22,7 @@ public class Main implements KeyListener {
 
         //Draw Surface
         Draw surfaceCanvas = new Draw("Surface");
-        shapes = new DrawShapes(surfaceCanvas, 4);
+        shapes = new DrawShapes(surfaceCanvas, 3);
         shapes.draw();
 
         surfaceCanvas.addKeyListener(new Main());

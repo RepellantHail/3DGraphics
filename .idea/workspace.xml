@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="eb81abc1-27dd-4173-b902-54e44507f820" name="Changes" comment="Added Automatic rotation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Arista.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Arista.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Draw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Draw.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DrawShapes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DrawShapes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Figure.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Figure.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
@@ -26,7 +28,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/Arista.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/Arista.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Draw.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Figure.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Main.java" root0="FORCE_HIGHLIGHTING" />
