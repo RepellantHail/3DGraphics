@@ -3,11 +3,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Draw extends JFrame {
-    private BufferedImage offscreenBuffer;
-    private Graphics2D offscreenGraphics;
+    private final BufferedImage offscreenBuffer;
+    private final Graphics2D offscreenGraphics;
     public Draw(String title) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 400);
+        setSize(800, 800);
         setTitle(title);
 
         offscreenBuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -51,10 +51,5 @@ public class Draw extends JFrame {
                 y0 += sy;
             }
         }
-    }
-    private Color getColor(int x, int y){
-        Color color;
-        color = (x < 199) ? Color.RED : Color.GREEN;
-        return color;
     }
 }

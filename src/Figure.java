@@ -1,33 +1,67 @@
 import java.awt.*;
 
 public class Figure {
-    Arista aristas[];
-    Point3D vertices[];
-    private int size;  // Size of the cube
+    Arista[] aristas;
+    Point3D[] vertices;
+    Figure[][][] cubes;
+    protected int size;  // Size of the cube
     public Figure(int figureID){
-        this.size = 100;
+        this.size = 60;
         switch (figureID){
             case 1 -> initializeCube();
             case 2 -> initializePyramid();
             case 3-> initializeCurve();
             case 4-> initializeSurface();
             case 5-> initializeCylinder();
+            case 6-> initializeRubik();
             default -> initializeCube();
+        }
+    }
+    public Figure(Figure other)  {
+        // Copy size
+        this.size = other.size;
+
+        // Copy vertices
+        this.vertices = new Point3D[other.vertices.length];
+        for (int i = 0; i < other.vertices.length; i++) {
+            this.vertices[i] = new Point3D(other.vertices[i]);
+        }
+
+        // Copy aristas
+        this.aristas = new Arista[other.aristas.length];
+        for (int i = 0; i < other.aristas.length; i++) {
+            this.aristas[i] = new Arista(other.aristas[i]);
+        }
+
+        // Copy cubes
+        if (other.cubes != null) {
+            this.cubes = new Figure[other.cubes.length][other.cubes[0].length][other.cubes[0][0].length];
+            for (int x = 0; x < other.cubes.length; x++) {
+                for (int y = 0; y < other.cubes[x].length; y++) {
+                    for (int z = 0; z < other.cubes[x][y].length; z++) {
+                        this.cubes[x][y][z] = new Figure(other.cubes[x][y][z]);
+                    }
+                }
+            }
         }
     }
     public void setSize(int size) {
         this.size = size;
     }
+    public int getSize() {
+        return size;
+    }
     private void initializeCube(){
+        int l = size;//Length of the cube
         this.vertices = new Point3D[]{
                 new Point3D(0, 0, 0),
-                new Point3D(0, 0, 1),
-                new Point3D(1, 0, 1),
-                new Point3D(1, 0, 0),
-                new Point3D(1, 1, 0),
-                new Point3D(1, 1, 1),
-                new Point3D(0, 1, 1),
-                new Point3D(0, 1, 0),
+                new Point3D(0, 0,   l),
+                new Point3D(  l, 0,   l),
+                new Point3D(  l, 0, 0),
+                new Point3D(  l,   l, 0),
+                new Point3D(  l,   l,    l),
+                new Point3D(0,  l,    l),
+                new Point3D(0,  l, 0),
         };
         this.aristas = new Arista[12];
         aristas[0]  = new Arista(0, 1);
@@ -229,6 +263,33 @@ public class Figure {
 
         return new Color(red, green, blue);
     }
+    private void translateVertices(Figure figure, int deltaX, int deltaY, int deltaZ) {
+        for (Point3D vertex : figure.getVertices()) {
+            vertex.setX(vertex.getX() + deltaX);
+            vertex.setY(vertex.getY() + deltaY);
+            vertex.setZ(vertex.getZ() + deltaZ);
+        }
+    }
+    protected void initializeRubik(){
+        int cubeSize = 3;
+        int cubeSpacing = 20;
+        this.cubes = new Figure[cubeSize][cubeSize][cubeSize];
 
+        // Loop through each position in the Rubik's Cube
+        for (int x = 0; x < cubeSize; x++) {
+            for (int y = 0; y < cubeSize; y++) {
+                for (int z = 0; z < cubeSize; z++) {
+                    // Calculate the position of the current cube
+                    int cubeX = x * cubeSpacing;
+                    int cubeY = y * cubeSpacing;
+                    int cubeZ = z * cubeSpacing;
 
+                    Figure cube = new Figure(1);
+                    translateVertices(cube, cubeX, cubeY, cubeZ);
+                    cubes[x][y][z] = cube;
+                }
+            }
+        }
+
+    }
 }

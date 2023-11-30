@@ -7,6 +7,11 @@ public class Point3D {
         this.y = y;
         this.z = z;
     }
+    public Point3D(Point3D other) {
+        this.x = other.x;
+        this.y = other.y;
+        this.z = other.z;
+    }
     public void setX(int x) {
         this.x = x;
     }

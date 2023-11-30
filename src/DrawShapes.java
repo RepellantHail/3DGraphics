@@ -1,24 +1,40 @@
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DrawShapes {
-    private Draw canvas;
-    private int projection;
+    private final Draw canvas;
+    private final int projection;
     private Figure originalFigure;
     private Figure transformedFigure;
     private Point[] projectedFigure;
-    private float projectionMatrix[][] = new float[4][4];
     private int figureID;
     private Color color;
-    private float distance = 1;
     private int centerX;
     private int centerY;
     private double initialScale = 15;
     private double initialAngleX = 0;
     private double initialAngleY = 0;
     private double initialAngleZ = 0;
+    private RubikCube rubikCube;
+    public DrawShapes(Draw canvas){//Contructor for rubik Cube
+        this.canvas = canvas;
+        this.color = Color.black;
+        this.centerX = canvas.getWidth() / 2;
+        this.centerY = canvas.getWidth() / 2;
+        this.projection = 1;
 
+        //Parameters to create Cube
+        int cubeSize = 3;//Number of cubes 3x3x3
+        int cubeSpacing = 5; //Space between each cube
+
+        this.rubikCube = new RubikCube(cubeSize,cubeSpacing);
+
+        //Each cube has a length of 60
+        centerX -= (cubeSize * 60)/2;
+        centerY -= (cubeSize * 60)/2;
+
+        initializeRubikCubeAndDraw();
+    }
     public DrawShapes(Draw canvas, int figureID){
         this.canvas = canvas;
         this.figureID = figureID;
@@ -77,7 +93,6 @@ public class DrawShapes {
         return projectedPoints;
     }
     private Point[] perspectiveProjection(Point3D[] vertices) {
-        Point[] projectedPoints = new Point[vertices.length];
 
         /*for (int i = 0; i < vertices.length; i++) {
             // Homogeneous coordinates
@@ -101,7 +116,7 @@ public class DrawShapes {
             projectedPoints[i] = new Point(projectedX, projectedY);
         }*/
 
-        return projectedPoints;
+        return new Point[vertices.length];
     }
     public void centerFigure() {
         int totalX = 0;
@@ -186,8 +201,8 @@ public class DrawShapes {
             vertex.setZ((int) Math.round(scaledZ));
         }
     }
-    public void translateFigure(int deltaX, int deltaY) {
-        translateVertices(transformedFigure, deltaX, deltaY);
+    public void translateFigure(int deltaX, int deltaY, int deltaZ) {
+        translateVertices(transformedFigure, deltaX, deltaY, deltaZ);
         //Update center
         centerX += deltaX;
         centerY += deltaY;
@@ -195,10 +210,11 @@ public class DrawShapes {
         this.projectedFigure = parallelProjection(transformedFigure.getVertices()); // Re-project the translated vertices
         draw(); // Draw the updated figure
     }
-    private void translateVertices(Figure figure,int deltaX, int deltaY){
+    private void translateVertices(Figure figure,int deltaX, int deltaY, int deltaZ){
         for (Point3D vertex : figure.getVertices()) {
             vertex.setX(vertex.getX() + deltaX);
             vertex.setY(vertex.getY() + deltaY);
+            vertex.setZ(vertex.getZ() + deltaZ);
         }
     }
     public void rotateFigureX(double angle){
@@ -337,21 +353,31 @@ public class DrawShapes {
         // Start the rotation thread
         rotationThread.start();
     }
-    private Color getColor(int x, int y) {
-        // Ensure x and y are not zero to avoid division by zero
-        x = (x == 0) ? 1 : x;
-        y = (y == 0) ? 1 : y;
+    private void initializeRubikCubeAndDraw() {
+        Figure[][][] rubikFigures = rubikCube.getFigures();
 
-        double factor = 2.0;
-
-        // Calculate RGB values based on the position of x and y
-        int red = (255 );
-        int blue = (255 / y * 200);
-        int green = 0;
-
-        return new Color(red, green, blue);
+        for (int x = 0; x < rubikFigures.length; x++) {
+            for (int y = 0; y < rubikFigures[x].length; y++) {
+                for (int z = 0; z < rubikFigures[x][y].length; z++) {
+                    Figure cube = new Figure(rubikFigures[x][y][z]);
+                    drawCube(cube);
+                }
+            }
+        }
     }
+    private void drawCube(Figure cube) {
+        Arista[] cubo = cube.getAristas();
+        projectedFigure = parallelProjection(cube.getVertices());
 
+        for (Arista a : cubo) {
+            int x0 = projectedFigure[a.getVerticeOrigen()].x  + centerX;
+            int y0 = projectedFigure[a.getVerticeOrigen()].y  + centerY;
+            int x1 = projectedFigure[a.getVerticeDestino()].x + centerX;
+            int y1 = projectedFigure[a.getVerticeDestino()].y + centerY;
 
+            canvas.drawLine(x0, y0, x1, y1, a.getColor());
+        }
 
+        canvas.repaint();
+    }
 }
