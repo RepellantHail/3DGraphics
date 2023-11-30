@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb81abc1-27dd-4173-b902-54e44507f820" name="Changes" comment="Solved deformation of shape">
+    <list default="true" id="eb81abc1-27dd-4173-b902-54e44507f820" name="Changes" comment="Added setter for number of cubes composing rubkis cube">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DrawShapes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DrawShapes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,11 +24,12 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/Arista.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/Draw.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/Figure.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/Arista.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/Draw.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/Figure.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/Main.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Point3D.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/RubikCube.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -153,7 +153,23 @@
       <option name="project" value="LOCAL" />
       <updated>1701381601369</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Solved angle rotation, keeping current state, and added reset position">
+      <option name="closed" value="true" />
+      <created>1701382447634</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1701382447634</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Added setter for number of cubes composing rubkis cube">
+      <option name="closed" value="true" />
+      <created>1701382721711</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1701382721711</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -167,7 +183,9 @@
     <MESSAGE value="Cube matrix created and draw method for cubes" />
     <MESSAGE value="Added rotation to the rubik cube. But its rotating around a center point, instead of the center of the screen" />
     <MESSAGE value="Solved deformation of shape" />
-    <option name="LAST_COMMIT_MESSAGE" value="Solved deformation of shape" />
+    <MESSAGE value="Solved angle rotation, keeping current state, and added reset position" />
+    <MESSAGE value="Added setter for number of cubes composing rubkis cube" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added setter for number of cubes composing rubkis cube" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

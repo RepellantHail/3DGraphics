@@ -333,6 +333,10 @@ public class DrawShapes {
         Arista[] cubo = cube.getAristas();
         projectedFigure = parallelProjection(cube.getVertices());
 
+        //Calculate Center
+        centerX = (canvas.getWidth()   /2) - (rubikCube.getCubeSize() * 60 / 2);
+        centerY = (canvas.getHeight()  /2) - (rubikCube.getCubeSize() * 60 / 2);
+
         for (Arista a : cubo) {
             int x0 = projectedFigure[a.getVerticeOrigen()].x  + centerX;
             int y0 = projectedFigure[a.getVerticeOrigen()].y  + centerY;
