@@ -344,70 +344,34 @@ public class DrawShapes {
 
         canvas.repaint();
     }
-    public void rotateCubeZ(double angle) {
-        canvas.clearBuffer();
-
-        initialAngleZ += angle;
-
-        for (int x = 0; x < rubikCube.getCubeSize(); x++) {
-            for (int y = 0; y < rubikCube.getCubeSize(); y++) {
-                for (int z = 0; z < rubikCube.getCubeSize(); z++) {
-                    Figure cube = rubikCube.getFigures()[x][y][z];
-                    originalFigure = cube;
-
-                    // Copy the cube before applying rotation
-                    Figure rotatedCube = new Figure(cube);
-                    rotateVerticesZ(rotatedCube,initialAngleZ);
-                    transformedFigure = new Figure(rotatedCube);
-                    drawCube(transformedFigure);
-                }
-            }
-        }
-    }
-    public void rotateCubeY(double angle) {
-        canvas.clearBuffer();
-
-        initialAngleY += angle;
-
-        for (int x = 0; x < rubikCube.getCubeSize(); x++) {
-            for (int y = 0; y < rubikCube.getCubeSize(); y++) {
-                for (int z = 0; z < rubikCube.getCubeSize(); z++) {
-                    Figure cube = rubikCube.getFigures()[x][y][z];
-                    originalFigure = cube;
-
-                    // Copy the cube before applying rotation
-                    Figure rotatedCube = new Figure(cube);
-                    rotateVerticesY(rotatedCube,initialAngleY);
-                    transformedFigure = new Figure(rotatedCube);
-                    drawCube(transformedFigure);
-                }
-            }
-        }
-    }
-    public void rotateCubeX(double angle) {
-        canvas.clearBuffer();
-
-        initialAngleX += angle;
-
-        for (int x = 0; x < rubikCube.getCubeSize(); x++) {
-            for (int y = 0; y < rubikCube.getCubeSize(); y++) {
-                for (int z = 0; z < rubikCube.getCubeSize(); z++) {
-                    Figure cube = rubikCube.getFigures()[x][y][z];
-                    originalFigure = cube;
-
-                    // Copy the cube before applying rotation
-                    Figure rotatedCube = new Figure(cube);
-                    rotateVerticesX(rotatedCube,initialAngleX);
-                    transformedFigure = new Figure(rotatedCube);
-                    drawCube(transformedFigure);
-                }
-            }
-        }
-    }
     public void rotateCube(double angleX, double angleY, double angleZ){
-        rotateCubeX(angleX);
-        rotateCubeY(angleY);
-        rotateCubeZ(angleZ);
-    }
+        canvas.clearBuffer();
 
+        initialAngleX += angleX; initialAngleY += angleY; initialAngleZ += angleZ;
+
+        for (int x = 0; x < rubikCube.getCubeSize(); x++) {
+            for (int y = 0; y < rubikCube.getCubeSize(); y++) {
+                for (int z = 0; z < rubikCube.getCubeSize(); z++) {
+                    Figure cube = rubikCube.getFigures()[x][y][z];
+                    originalFigure = cube;
+
+                    // Copy the cube before applying rotation
+                    Figure rotatedCube = new Figure(cube);
+
+                    rotateVerticesX (rotatedCube, initialAngleX);
+                    rotateVerticesY (rotatedCube, initialAngleY);
+                    rotateVerticesZ (rotatedCube, initialAngleZ);
+
+                    transformedFigure = new Figure(rotatedCube);
+                    drawCube(transformedFigure);
+                }
+            }
+        }
+    }
+    public void resetCube() {
+        this.initialAngleX = 0;
+        this.initialAngleY = 0;
+        this.initialAngleZ = 0;
+        rotateCube(0,0,0);
+    }
 }

@@ -26,9 +26,10 @@ public class Main implements KeyListener {
             case KeyEvent.VK_RIGHT -> shapes.translateFigure(step, 0, 0); // Move right
             case KeyEvent.VK_ADD -> shapes.scaleFigure(1.02);
             case KeyEvent.VK_MINUS -> shapes.scaleFigure(0.98);
-            case KeyEvent.VK_X -> shapes.rotateCubeX(angle);
-            case KeyEvent.VK_Y -> shapes.rotateCubeY(angle);
-            case KeyEvent.VK_Z -> shapes.rotateCubeZ(angle);
+            case KeyEvent.VK_X -> shapes.rotateCube( angle  , 0, 0);
+            case KeyEvent.VK_Y -> shapes.rotateCube(0,    angle, 0);
+            case KeyEvent.VK_Z -> shapes.rotateCube(0, 0,    angle);
+            case KeyEvent.VK_0 -> shapes.resetCube();
             default -> {
             }
         }
