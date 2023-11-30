@@ -8,8 +8,9 @@ public class DrawShapes {
     private Point[] projectedFigure;
     private int figureID;
     private Color color;
-    private int centerX;
-    private int centerY;
+    private int centerX = 0;
+    private int centerY = 0;
+    private int centerZ = 0;
     private double initialScale = 1;
     private double initialAngleX = 0;
     private double initialAngleY = 0;
@@ -18,8 +19,6 @@ public class DrawShapes {
     public DrawShapes(Draw canvas){//Contructor for rubik Cube
         this.canvas = canvas;
         this.color = Color.black;
-        this.centerX = canvas.getWidth() / 2;
-        this.centerY = canvas.getWidth() / 2;
         this.initialScale = 1.0;
 
         //Parameters to create Cube
@@ -27,10 +26,6 @@ public class DrawShapes {
         int cubeSpacing = 5; //Space between each cube
 
         this.rubikCube = new RubikCube(cubeSize,cubeSpacing);
-
-        //Each cube has a length of 60
-        centerX -= (cubeSize * 60)/2;
-        centerY -= (cubeSize * 60)/2;
 
         initializeRubikCubeAndDraw();
     }
@@ -354,37 +349,18 @@ public class DrawShapes {
         this.initialAngleY = 0;
         this.initialAngleZ = 0;
         this.initialScale  = 1.0;
-        rotateCube(0,0,0);
+        this.centerX = 0;
+        this.centerY = 0;
+        this.centerZ = 0;
+        transformCube(0,0,0, 1.0, 0, 0,0);
     }
     public void setRubikCubeSize(int size){
         rubikCube.setCubeSize(size);
     }
-    public void rotateCube(double angleX, double angleY, double angleZ){
+    protected void transformCube(double angleX, double angleY, double angleZ, double scaleFactor, int deltaX, int deltaY, int deltaZ){
         canvas.clearBuffer();
 
         initialAngleX += angleX; initialAngleY += angleY; initialAngleZ += angleZ;
-
-        for (int x = 0; x < rubikCube.getCubeSize(); x++) {
-            for (int y = 0; y < rubikCube.getCubeSize(); y++) {
-                for (int z = 0; z < rubikCube.getCubeSize(); z++) {
-                    Figure cube = rubikCube.getFigures()[x][y][z];
-                    originalFigure = cube;
-
-                    // Copy the cube before applying rotation
-                    Figure rotatedCube = new Figure(cube);
-
-                    rotateVerticesX (rotatedCube, initialAngleX);
-                    rotateVerticesY (rotatedCube, initialAngleY);
-                    rotateVerticesZ (rotatedCube, initialAngleZ);
-
-                    transformedFigure = new Figure(rotatedCube);
-                    drawCube(transformedFigure);
-                }
-            }
-        }
-    }
-    protected void scaleCube(double scaleFactor){
-        canvas.clearBuffer();
         initialScale *= scaleFactor;
 
         for (int x = 0; x < rubikCube.getCubeSize(); x++) {
@@ -395,7 +371,13 @@ public class DrawShapes {
 
                     // Copy the cube before applying rotation
                     Figure copyCube = new Figure(cube);
+
+                    rotateVerticesX (copyCube, initialAngleX);
+                    rotateVerticesY (copyCube, initialAngleY);
+                    rotateVerticesZ (copyCube, initialAngleZ);
                     scaleVertices (copyCube, initialScale);
+                    translateVertices(cube, deltaX, deltaY, deltaZ);
+
                     transformedFigure = new Figure(copyCube);
                     drawCube(transformedFigure);
                 }
