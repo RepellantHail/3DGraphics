@@ -374,4 +374,7 @@ public class DrawShapes {
         this.initialAngleZ = 0;
         rotateCube(0,0,0);
     }
+    public void setRubikCubeSize(int size){
+        rubikCube.setCubeSize(size);
+    }
 }

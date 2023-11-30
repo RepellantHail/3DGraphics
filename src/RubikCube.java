@@ -38,6 +38,9 @@ public class RubikCube {
     public void setCube(Figure cube, int x, int y, int z) {
         this.cubes[x][y][z] = cube;
     }
+    public void setCubeSize(int size){
+        this.cubeSize = size;
+    }
     public int getCubeSize(){
         return this.cubeSize;
     }

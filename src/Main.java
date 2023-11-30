@@ -1,7 +1,5 @@
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 public class Main implements KeyListener {
     static DrawShapes shapes;
     public static void main(String[] args) {
@@ -30,6 +28,9 @@ public class Main implements KeyListener {
             case KeyEvent.VK_Y -> shapes.rotateCube(0,    angle, 0);
             case KeyEvent.VK_Z -> shapes.rotateCube(0, 0,    angle);
             case KeyEvent.VK_0 -> shapes.resetCube();
+            case KeyEvent.VK_1 -> shapes.setRubikCubeSize(1);
+            case KeyEvent.VK_2 -> shapes.setRubikCubeSize(2);
+            case KeyEvent.VK_3 -> shapes.setRubikCubeSize(3);
             default -> {
             }
         }
