@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb81abc1-27dd-4173-b902-54e44507f820" name="Changes" comment="Added surfaces">
-      <change afterPath="$PROJECT_DIR$/src/RubikCube.java" afterDir="false" />
+    <list default="true" id="eb81abc1-27dd-4173-b902-54e44507f820" name="Changes" comment="Cube matrix created and draw method for cubes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Arista.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Arista.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Draw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Draw.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DrawShapes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DrawShapes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Figure.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Figure.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Point3D.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Point3D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RubikCube.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RubikCube.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +130,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701200451278</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Cube matrix created and draw method for cubes">
+      <option name="closed" value="true" />
+      <created>1701372489327</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1701372489327</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -145,7 +149,8 @@
     <MESSAGE value="Added transformations. Corrected methods, missing deformation in rotations" />
     <MESSAGE value="Added Automatic rotation" />
     <MESSAGE value="Added surfaces" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added surfaces" />
+    <MESSAGE value="Cube matrix created and draw method for cubes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cube matrix created and draw method for cubes" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

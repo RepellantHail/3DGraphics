@@ -72,10 +72,7 @@ public class DrawShapes {
         this.projectionMatrix[3][3] = 0.0f;*/
 
         // Initialize the projected figure
-        if(projection == 1)
-            this.projectedFigure = parallelProjection(originalFigure.getVertices());
-        else
-            this.projectedFigure = perspectiveProjection(originalFigure.getVertices());
+    this.projectedFigure = parallelProjection(originalFigure.getVertices());
 
         scaleFigure(1.0);
         draw();
@@ -91,32 +88,6 @@ public class DrawShapes {
         }
 
         return projectedPoints;
-    }
-    private Point[] perspectiveProjection(Point3D[] vertices) {
-
-        /*for (int i = 0; i < vertices.length; i++) {
-            // Homogeneous coordinates
-            float x = (float) vertices[i].getX();
-            float y = (float) vertices[i].getY();
-            float z = (float) vertices[i].getZ();
-            float w = 1.0f;
-
-            // Apply projection matrix
-            float projX = projectionMatrix[0][0] * x + projectionMatrix[1][0] * y + projectionMatrix[2][0] * z + projectionMatrix[3][0] * w;
-            float projY = projectionMatrix[0][1] * x + projectionMatrix[1][1] * y + projectionMatrix[2][1] * z + projectionMatrix[3][1] * w;
-
-            // Perspective divide
-            projX /= w;
-            projY /= w;
-
-            // Map to screen coordinates
-            int projectedX = (int) Math.round((projX + 1) * canvas.getWidth() / 2);
-            int projectedY = (int) Math.round((-projY + 1) * canvas.getHeight() / 2);
-
-            projectedPoints[i] = new Point(projectedX, projectedY);
-        }*/
-
-        return new Point[vertices.length];
     }
     public void centerFigure() {
         int totalX = 0;
@@ -175,15 +146,12 @@ public class DrawShapes {
         destination.setVertices(copiedVertices);
         destination.setAristas(copiedAristas);
     }
-    private Point[] projectFigure(){
-        return (projection == 1) ? parallelProjection(transformedFigure.getVertices()): perspectiveProjection(transformedFigure.getVertices());
-    }
     public void scaleFigure(double factor) {
         copyFigure(originalFigure, transformedFigure);
         scaleVertices(transformedFigure, initialScale);
         scaleVertices(transformedFigure, factor);
 
-        projectedFigure = projectFigure();
+        projectedFigure = parallelProjection(transformedFigure.getVertices());
 
         draw(); // Draw the updated figure
         initialScale *= factor;
@@ -222,7 +190,7 @@ public class DrawShapes {
         rotateVerticesX(transformedFigure, initialAngleX);
         rotateVerticesX(transformedFigure, angle);
 
-        projectedFigure = projectFigure();
+        projectedFigure = parallelProjection(transformedFigure.getVertices());
 
         draw();
         initialAngleX += angle;
@@ -233,7 +201,7 @@ public class DrawShapes {
         rotateVerticesY(transformedFigure, initialAngleY);
         rotateVerticesY(transformedFigure, angle);
 
-        projectedFigure = projectFigure();
+        projectedFigure = parallelProjection(transformedFigure.getVertices());
 
         draw();
         initialAngleY += angle;
@@ -243,7 +211,7 @@ public class DrawShapes {
         rotateVerticesZ(transformedFigure, initialAngleZ);
         rotateVerticesZ(transformedFigure, angle);
 
-        projectedFigure = projectFigure();
+        projectedFigure = parallelProjection(transformedFigure.getVertices());
 
         draw();
         initialAngleZ += angle;
@@ -380,4 +348,65 @@ public class DrawShapes {
 
         canvas.repaint();
     }
+    public void rotateCubeX(double angle) {
+        canvas.clearBuffer();
+
+        for (int x = 0; x < rubikCube.getCubeSize(); x++) {
+            for (int y = 0; y < rubikCube.getCubeSize(); y++) {
+                for (int z = 0; z < rubikCube.getCubeSize(); z++) {
+
+                    Figure cube = rubikCube.getFigures()[x][y][z];
+
+                    // Copy the cube before applying rotation
+                    Figure rotatedCube = new Figure(cube);
+
+                    //Apply rotation to the cube
+                    rotateVerticesX(rotatedCube,angle);
+                    rubikCube.setCube(rotatedCube,x,y,z);
+                    drawCube(cube);
+                }
+            }
+        }
+    }
+    public void rotateCubeY(double angle) {
+        canvas.clearBuffer();
+
+        for (int x = 0; x < rubikCube.getCubeSize(); x++) {
+            for (int y = 0; y < rubikCube.getCubeSize(); y++) {
+                for (int z = 0; z < rubikCube.getCubeSize(); z++) {
+
+                    Figure cube = rubikCube.getFigures()[x][y][z];
+
+                    // Copy the cube before applying rotation
+                    Figure rotatedCube = new Figure(cube);
+
+                    //Apply rotation to the cube
+                    rotateVerticesY(rotatedCube,angle);
+                    rubikCube.setCube(rotatedCube,x,y,z);
+                    drawCube(cube);
+                }
+            }
+        }
+    }
+    public void rotateCubeZ(double angle) {
+        canvas.clearBuffer();
+
+        for (int x = 0; x < rubikCube.getCubeSize(); x++) {
+            for (int y = 0; y < rubikCube.getCubeSize(); y++) {
+                for (int z = 0; z < rubikCube.getCubeSize(); z++) {
+
+                    Figure cube = rubikCube.getFigures()[x][y][z];
+
+                    // Copy the cube before applying rotation
+                    Figure rotatedCube = new Figure(cube);
+
+                    //Apply rotation to the cube
+                    rotateVerticesZ(rotatedCube,angle);
+                    rubikCube.setCube(rotatedCube,x,y,z);
+                    drawCube(cube);
+                }
+            }
+        }
+    }
+
 }
