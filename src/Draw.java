@@ -7,7 +7,7 @@ public class Draw extends JFrame {
     private final Graphics2D offscreenGraphics;
     public Draw(String title) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 800);
+        setSize(900, 900);
         setTitle(title);
 
         offscreenBuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);

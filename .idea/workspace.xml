@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb81abc1-27dd-4173-b902-54e44507f820" name="Changes" comment="Added setter for number of cubes composing rubkis cube">
+    <list default="true" id="eb81abc1-27dd-4173-b902-54e44507f820" name="Changes" comment="Added recentering when changing rubik cube size">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Draw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Draw.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DrawShapes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DrawShapes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +24,20 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "RepellantHail"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="15834d20-1a84-454f-8ca5-cefc9f500dd3" />
+        <option name="url" value="https://github.com/RepellantHail/3DGraphics.git" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/Arista.java" root0="SKIP_INSPECTION" />
@@ -169,7 +185,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701382721711</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Added recentering when changing rubik cube size">
+      <option name="closed" value="true" />
+      <created>1701383424084</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1701383424084</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -185,7 +209,8 @@
     <MESSAGE value="Solved deformation of shape" />
     <MESSAGE value="Solved angle rotation, keeping current state, and added reset position" />
     <MESSAGE value="Added setter for number of cubes composing rubkis cube" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added setter for number of cubes composing rubkis cube" />
+    <MESSAGE value="Added recentering when changing rubik cube size" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added recentering when changing rubik cube size" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
