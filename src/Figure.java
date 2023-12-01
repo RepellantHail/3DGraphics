@@ -5,6 +5,11 @@ public class Figure {
     Point3D[] vertices;
     Figure[][][] cubes;
     protected int size;  // Size of the cube
+    public Figure() {
+        this.size = 0;
+        this.vertices = new Point3D[0];
+        this.aristas = new Arista[0];
+    }
     public Figure(int figureID){
         this.size = 60;
         switch (figureID){
@@ -224,6 +229,19 @@ public class Figure {
     }
     public Point3D[] getVertices(){
         return this.vertices;
+    }
+    public void addVertex(int x, int y, int z) {
+        // Create a new array to hold the updated vertices
+        Point3D[] newVertices = new Point3D[vertices.length + 1];
+
+        // Copy existing vertices to the new array
+        System.arraycopy(vertices, 0, newVertices, 0, vertices.length);
+
+        // Add the new vertex to the end of the array
+        newVertices[vertices.length] = new Point3D(x, y, z);
+
+        // Update the vertices array
+        vertices = newVertices;
     }
     protected double getMinZ() {
         double minZ = Double.MAX_VALUE;

@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DrawShapes {
@@ -11,11 +12,13 @@ public class DrawShapes {
     private int centerX = 0;
     private int centerY = 0;
     private int centerZ = 0;
-    private double initialScale = 1;
+    private double initialScale;
     private double initialAngleX = 0;
     private double initialAngleY = 0;
     private double initialAngleZ = 0;
     private RubikCube rubikCube;
+    private int maxDepth = 0;
+    private int minDepth = 0;
     public DrawShapes(Draw canvas){//Contructor for rubik Cube
         this.canvas = canvas;
         this.color = Color.black;
@@ -317,32 +320,13 @@ public class DrawShapes {
         Figure[][][] rubikFigures = rubikCube.getFigures();
 
         for (Figure[][] rubikFigure : rubikFigures) {
-            for (int y = 0; y < rubikFigure.length; y++) {
-                for (int z = 0; z < rubikFigure[y].length; z++) {
-                    Figure cube = new Figure(rubikFigure[y][z]);
+            for (Figure[] figures : rubikFigure) {
+                for (Figure figure : figures) {
+                    Figure cube = new Figure(figure);
                     drawCube(cube);
                 }
             }
         }
-    }
-    private void drawCube(Figure cube) {
-        Arista[] cubo = cube.getAristas();
-        projectedFigure = parallelProjection(cube.getVertices());
-
-        //Calculate Center
-        int centerX = (canvas.getWidth()  / 2) - (rubikCube.getCubeSize() * 60 / 2);
-        int centerY = (canvas.getHeight() / 2) - (rubikCube.getCubeSize() * 60 / 2);
-
-        for (Arista a : cubo) {
-            int x0 = projectedFigure[a.getVerticeOrigen()].x  + centerX;
-            int y0 = projectedFigure[a.getVerticeOrigen()].y  + centerY;
-            int x1 = projectedFigure[a.getVerticeDestino()].x + centerX;
-            int y1 = projectedFigure[a.getVerticeDestino()].y + centerY;
-
-            canvas.drawLine(x0, y0, x1, y1, a.getColor());
-        }
-
-        canvas.repaint();
     }
     public void resetCube() {
         this.initialAngleX = 0;
@@ -352,10 +336,52 @@ public class DrawShapes {
         this.centerX = 0;
         this.centerY = 0;
         this.centerZ = 0;
+        this.minDepth = 0;
+        this.maxDepth = 0;
         transformCube(0,0,0, 1.0, 0, 0,0);
     }
     public void setRubikCubeSize(int size){
         rubikCube.setCubeSize(size);
+    }
+    private void drawCube(Figure cube) {
+        //Calculate Center
+        int centerX = (canvas.getWidth()  / 2) - (rubikCube.getCubeSize() * 60 / 2);
+        int centerY = (canvas.getHeight() / 2) - (rubikCube.getCubeSize() * 60 / 2);
+
+        ArrayList<Arista> visibleAristas = horizonteFlotante(cube, cube.getAristas());
+        projectedFigure = parallelProjection(cube.getVertices());
+
+        for (Arista edge : visibleAristas ) {
+                int x0 = projectedFigure[edge.getVerticeOrigen()].x + centerX;
+                int y0 = projectedFigure[edge.getVerticeOrigen()].y + centerY;
+                int x1 = projectedFigure[edge.getVerticeDestino()].x + centerX;
+                int y1 = projectedFigure[edge.getVerticeDestino()].y + centerY;
+
+                canvas.drawLine(x0, y0, x1, y1, edge.getColor());
+        }
+
+        canvas.repaint();
+    }
+    private ArrayList<Arista> horizonteFlotante(Figure cube, Arista[] edges){
+        Point3D[] vertices = cube.getVertices(); //Get vertices
+        double maxDepth = Double.NEGATIVE_INFINITY;
+        double minDepth = Double.POSITIVE_INFINITY;
+
+        for(Point3D vertice : vertices) {
+            maxDepth = Math.max(maxDepth, vertice.getZ());
+            minDepth = Math.min(minDepth, vertice.getZ());
+        }
+
+        ArrayList<Arista> visibleAristas = new ArrayList<>();
+        for (Arista edge : edges) {
+            int vtx0 = edge.getVerticeOrigen();
+            int vtx1 = edge.getVerticeDestino();
+            if (vertices[vtx0].getZ() < maxDepth && vertices[vtx1].getZ() < maxDepth) {
+                visibleAristas.add(edge);
+            }
+        }
+
+        return visibleAristas;
     }
     protected void transformCube(double angleX, double angleY, double angleZ, double scaleFactor, int deltaX, int deltaY, int deltaZ){
         canvas.clearBuffer();
@@ -384,4 +410,5 @@ public class DrawShapes {
             }
         }
     }
+
 }
