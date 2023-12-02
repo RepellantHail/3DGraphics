@@ -243,27 +243,29 @@ public class Figure {
         // Update the vertices array
         vertices = newVertices;
     }
-    protected double getMinZ() {
-        double minZ = Double.MAX_VALUE;
-
-        for (Point3D vertex : vertices) {
-            if (vertex.getZ() < minZ) {
-                minZ = vertex.getZ();
-            }
-        }
-
-        return minZ;
+    protected double getMinX() {
+        double minX = Double.MAX_VALUE;
+        for (Point3D vertex : vertices)
+            minX = Math.min(minX, vertex.getX());
+        return minX;
     }
-    protected double getMaxZ() {
-        double maxZ = Double.MIN_VALUE;
-
-        for (Point3D vertex : vertices) {
-            if (vertex.getZ() > maxZ) {
-                maxZ = vertex.getZ();
-            }
-        }
-
-        return maxZ;
+    protected double getMaxX() {
+        double maxX = Double.MIN_VALUE;
+        for (Point3D vertex : vertices)
+            maxX = Math.max(maxX, vertex.getX());
+        return maxX;
+    }
+    protected double getMinY() {
+        double minY = Double.MAX_VALUE;
+        for (Point3D vertex : vertices)
+            minY = Math.min(minY, vertex.getY());
+        return minY;
+    }
+    protected double getMaxY() {
+        double maxY = Double.MIN_VALUE;
+        for (Point3D vertex : vertices)
+            maxY = Math.max(maxY, vertex.getY());
+        return maxY;
     }
     private Color getColor(int i, int j) {
         // Adjust the factor to control the range of the color gradient
@@ -309,5 +311,17 @@ public class Figure {
             }
         }
 
+    }
+    protected double getMinZ() {
+        double minZ = Double.MAX_VALUE;
+        for (Point3D vertex : vertices)
+            minZ = Math.min(minZ, vertex.getZ());
+        return minZ;
+    }
+    protected double getMaxZ() {
+        double maxZ = Double.MIN_VALUE;
+        for (Point3D vertex : vertices)
+            maxZ = Math.max(maxZ, vertex.getZ());
+        return maxZ;
     }
 }

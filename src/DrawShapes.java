@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 public class DrawShapes {
     private final Draw canvas;
     private Figure originalFigure;
@@ -17,16 +16,20 @@ public class DrawShapes {
     private double initialAngleY = 0;
     private double initialAngleZ = 0;
     private RubikCube rubikCube;
-    private int maxDepth = 0;
-    private int minDepth = 0;
+    private double max_XRubik = Double.NEGATIVE_INFINITY;
+    private double min_XRubik = Double.POSITIVE_INFINITY;
+    private double max_YRubik = Double.NEGATIVE_INFINITY;
+    private double min_YRubik = Double.POSITIVE_INFINITY;
+    private double max_ZRubik = Double.NEGATIVE_INFINITY;
+    private double min_ZRubik = Double.POSITIVE_INFINITY;
+
     public DrawShapes(Draw canvas){//Contructor for rubik Cube
         this.canvas = canvas;
         this.color = Color.black;
         this.initialScale = 1.0;
-
         //Parameters to create Cube
         int cubeSize = 3;//Number of cubes 3x3x3
-        int cubeSpacing = 5; //Space between each cube
+        int cubeSpacing = 2; //Space between each cube
 
         this.rubikCube = new RubikCube(cubeSize,cubeSpacing);
 
@@ -316,18 +319,6 @@ public class DrawShapes {
             vertex.setY((int) Math.round(newY));
         }
     }
-    private void initializeRubikCubeAndDraw() {
-        Figure[][][] rubikFigures = rubikCube.getFigures();
-
-        for (Figure[][] rubikFigure : rubikFigures) {
-            for (Figure[] figures : rubikFigure) {
-                for (Figure figure : figures) {
-                    Figure cube = new Figure(figure);
-                    drawCube(cube);
-                }
-            }
-        }
-    }
     public void resetCube() {
         this.initialAngleX = 0;
         this.initialAngleY = 0;
@@ -336,55 +327,20 @@ public class DrawShapes {
         this.centerX = 0;
         this.centerY = 0;
         this.centerZ = 0;
-        this.minDepth = 0;
-        this.maxDepth = 0;
         transformCube(0,0,0, 1.0, 0, 0,0);
     }
     public void setRubikCubeSize(int size){
         rubikCube.setCubeSize(size);
     }
-    private void drawCube(Figure cube) {
-        //Calculate Center
-        int centerX = (canvas.getWidth()  / 2) - (rubikCube.getCubeSize() * 60 / 2);
-        int centerY = (canvas.getHeight() / 2) - (rubikCube.getCubeSize() * 60 / 2);
-
-        ArrayList<Arista> visibleAristas = horizonteFlotante(cube, cube.getAristas());
-        projectedFigure = parallelProjection(cube.getVertices());
-
-        for (Arista edge : visibleAristas ) {
-                int x0 = projectedFigure[edge.getVerticeOrigen()].x + centerX;
-                int y0 = projectedFigure[edge.getVerticeOrigen()].y + centerY;
-                int x1 = projectedFigure[edge.getVerticeDestino()].x + centerX;
-                int y1 = projectedFigure[edge.getVerticeDestino()].y + centerY;
-
-                canvas.drawLine(x0, y0, x1, y1, edge.getColor());
-        }
-
-        canvas.repaint();
-    }
-    private ArrayList<Arista> horizonteFlotante(Figure cube, Arista[] edges){
-        Point3D[] vertices = cube.getVertices(); //Get vertices
-        double maxDepth = Double.NEGATIVE_INFINITY;
-        double minDepth = Double.POSITIVE_INFINITY;
-
-        for(Point3D vertice : vertices) {
-            maxDepth = Math.max(maxDepth, vertice.getZ());
-            minDepth = Math.min(minDepth, vertice.getZ());
-        }
-
-        ArrayList<Arista> visibleAristas = new ArrayList<>();
-        for (Arista edge : edges) {
-            int vtx0 = edge.getVerticeOrigen();
-            int vtx1 = edge.getVerticeDestino();
-            if (vertices[vtx0].getZ() < maxDepth && vertices[vtx1].getZ() < maxDepth) {
-                visibleAristas.add(edge);
-            }
-        }
-
-        return visibleAristas;
-    }
     protected void transformCube(double angleX, double angleY, double angleZ, double scaleFactor, int deltaX, int deltaY, int deltaZ){
         canvas.clearBuffer();
+
+        min_XRubik = Double.POSITIVE_INFINITY;
+        max_XRubik = Double.NEGATIVE_INFINITY;
+        min_YRubik = Double.POSITIVE_INFINITY;
+        max_YRubik = Double.NEGATIVE_INFINITY;
+        max_ZRubik = Double.NEGATIVE_INFINITY;
+        min_ZRubik = Double.POSITIVE_INFINITY;
 
         initialAngleX += angleX; initialAngleY += angleY; initialAngleZ += angleZ;
         initialScale *= scaleFactor;
@@ -405,10 +361,141 @@ public class DrawShapes {
                     translateVertices(cube, deltaX, deltaY, deltaZ);
 
                     transformedFigure = new Figure(copyCube);
-                    drawCube(transformedFigure);
+                        drawCube(transformedFigure);
                 }
             }
         }
     }
+    private void initializeRubikCubeAndDraw() {
+        min_XRubik = Double.POSITIVE_INFINITY;
+        max_XRubik = Double.NEGATIVE_INFINITY;
+        min_YRubik = Double.POSITIVE_INFINITY;
+        max_YRubik = Double.NEGATIVE_INFINITY;
+        Figure[][][] rubikFigures = rubikCube.getFigures();
 
+        for (Figure[][] rubikFigure : rubikFigures) {
+            for (Figure[] figures : rubikFigure) {
+                for (Figure figure : figures) {
+                    Figure cube = new Figure(figure);
+                        drawCube(cube);
+                }
+            }
+        }
+    }
+    private Boolean isCubeVisible(Figure cube){
+        double minDepthCube = cube.getMinZ();
+        double minXCube = cube.getMinX();
+
+        if (minDepthCube > max_ZRubik && minXCube > max_XRubik) {
+            max_ZRubik = Math.max(max_ZRubik, minDepthCube);
+            max_XRubik = Math.max(max_XRubik, minXCube);
+            return false; // Cube is not visible
+        }
+        return true;
+    }
+    private ArrayList<Arista> horizonteFlotante(Figure cube, Arista[] edges){
+        Point3D[] vertices = cube.getVertices(); //Get vertices
+        double maxDepthCube = Double.NEGATIVE_INFINITY;
+        double minDepthCube = Double.POSITIVE_INFINITY;
+
+        for(Point3D vertice : vertices) {
+            maxDepthCube = Math.max(maxDepthCube, vertice.getZ());
+            minDepthCube = Math.min(minDepthCube, vertice.getZ());
+        }
+
+        ArrayList<Arista> visibleAristas = new ArrayList<>();
+        for (Arista edge : edges) {
+            int vtx0 = edge.getVerticeOrigen();
+            int vtx1 = edge.getVerticeDestino();
+            if (vertices[vtx0].getZ() < maxDepthCube && vertices[vtx1].getZ() < maxDepthCube) {//Depth for a single cube
+                visibleAristas.add(edge);
+            }
+        }
+
+        return visibleAristas;
+    }
+    private void drawCube(Figure cube) {
+        //Calculate Center
+        int centerX = (canvas.getWidth()  / 2) - (rubikCube.getCubeSize() * 60 / 2);
+        int centerY = (canvas.getHeight() / 2) - (rubikCube.getCubeSize() * 60 / 2);
+
+        // Calculate visible edges and projected figure
+        ArrayList<Arista> visibleAristas = horizonteFlotante(cube, cube.getAristas());
+        projectedFigure = parallelProjection(cube.getVertices());
+
+        /*int x0 = 0; int y0 = 0;
+        int x1 = 0; int y1 = 0;
+        Boolean updateAreaFirstCube = true;*/
+
+        for (Arista edge : visibleAristas ) {
+        int x0 = projectedFigure[edge.getVerticeOrigen()].x  + centerX;
+        int y0 = projectedFigure[edge.getVerticeOrigen()].y  + centerY;
+        int x1 = projectedFigure[edge.getVerticeDestino()].x + centerX;
+        int y1 = projectedFigure[edge.getVerticeDestino()].y + centerY;
+            canvas.drawLine(x0, y0, x1, y1, edge.getColor());
+
+            //paintFace( x0 +1,  y0 +1,  x1+1,  y1+1,  Color.magenta);
+
+           /* if(updateAreaFirstCube){//Update Area
+                min_XRubik = Math.min(min_XRubik, x0);
+                min_YRubik = Math.min(min_YRubik, y0);
+                max_XRubik = Math.max(max_XRubik, x0);
+                max_YRubik = Math.max(max_YRubik, y0);
+                min_XRubik = Math.min(min_XRubik, x1);
+                min_YRubik = Math.min(min_YRubik, y1);
+                max_XRubik = Math.max(max_XRubik, x1);
+                max_YRubik = Math.max(max_YRubik, y1);
+                updateAreaFirstCube = false;
+            }*/
+
+            /*if(!isEdgeInside(x0, y0, x1, y1)) {
+            }*/
+        }
+
+/*        min_XRubik = Math.min(min_XRubik, x0);
+        min_YRubik = Math.min(min_YRubik, y0);
+        max_XRubik = Math.max(max_XRubik, x0);
+        max_YRubik = Math.max(max_YRubik, y0);
+        min_XRubik = Math.min(min_XRubik, x1);
+        min_YRubik = Math.min(min_YRubik, y1);
+        max_XRubik = Math.max(max_XRubik, x1);
+        max_YRubik = Math.max(max_YRubik, y1);*/
+
+        canvas.repaint();
+    }
+    private void paintFace(int x0, int y0, int x1, int y1, Color color) {
+        // Sort the points based on their y-coordinates
+        if (y0 > y1) {
+            int temp = y0;
+            y0 = y1;
+            y1 = temp;
+
+            temp = x0;
+            x0 = x1;
+            x1 = temp;
+        }
+
+        // Iterate through each scanline and fill the pixels
+        for (int y = y0; y <= y1; y++) {
+            // Calculate the intersection point with the scanline
+            int xIntersection = (int) (x0 + (double) (y - y0) / (y1 - y0) * (x1 - x0));
+
+            // Fill the pixels between x0 and xIntersection on the scanline
+            for (int x = x0; x <= xIntersection; x++) {
+                canvas.putPixel(x, y, color);
+            }
+        }
+    }
+
+    private Boolean isEdgeInside(int x0, int y0, int x1, int y1){
+        Point origin = new Point(x0, y0);
+        Point destin = new Point(x1, y1);
+
+        return !( isVertexInside(origin) || isVertexInside(destin) );
+    }
+    private Boolean isVertexInside(Point vertex) {
+        double x = vertex.getX();
+        double y = vertex.getY();
+        return (x >= min_XRubik && x <= max_XRubik) && (y >= min_YRubik && y <= max_YRubik);
+    }
 }
